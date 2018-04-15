@@ -7,7 +7,7 @@ const macaddress = "luggagemacadr";
 
 const logError = err => console.log(err);
 
-const socket = io("https://4e7d4256.ngrok.io/checkLuggage");
+const socket = io("http://tavbackend.us-west-1.elasticbeanstalk.com/checkLuggage");
 
 let isScanning = false
 onPushButton(() => {
