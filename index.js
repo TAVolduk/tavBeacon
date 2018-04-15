@@ -30,9 +30,12 @@ socket.on("flight_data", function (data) {
 
 
   noble.on('discover', (peripheral) => {
-    if (peripheral.address === "e5:fe:c1:fa:b5:e6") {
-      console.log("RSSI: " + peripheral.rssi);
+    if (!data[peripheral.address]) {
+      peripheral.connect();
     }
+    // if (peripheral.address === "e5:fe:c1:fa:b5:e6") {
+    //   console.log("RSSI: " + peripheral.rssi);
+    // }
   });
 });
 
