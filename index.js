@@ -7,20 +7,32 @@ const macaddress = "luggagemacadr";
 
 const logError = err => console.log(err);
 
-const socket = io("http://localhost:1337/checkLuggage");
+const socket = io("https://4e7d4256.ngrok.io/checkLuggage");
 
+let isScanning = false
 onPushButton(() => {
-  socket.emit("fetch_data", macaddress);
+  if(!isScanning){
+    socket.emit("fetch_data", macaddress);
+    console.log("Scan Active");
+    isScanning = true;
+  }
+  else {
+    noble.stopScanning(logError);
+    console.log("Scan stop");
+    isScanning = false;
+  }
 });
 
+
 socket.on("flight_data", function (data) {
+  data = JSON.parse(data);
+  console.log(data);
   noble.on('stateChange', (state) => {
     if (state === 'poweredOn') {
-      noble.startScanning([], true, (err) => {
+      noble.startScanning([], false, (err) => {
         if (err) {
           return console.log(err);
         }
-
         console.log("scanning...");
       });
     } else {
@@ -32,6 +44,11 @@ socket.on("flight_data", function (data) {
   noble.on('discover', (peripheral) => {
     if (!data[peripheral.address]) {
       peripheral.connect();
+     // console.log("Found mismatch : " + peripheral.advertisement.localName);
+	console.log(peripheral.address + " mismatch");
+    }
+    else {
+      console.log(peripheral.address + " OK");	
     }
     // if (peripheral.address === "e5:fe:c1:fa:b5:e6") {
     //   console.log("RSSI: " + peripheral.rssi);
